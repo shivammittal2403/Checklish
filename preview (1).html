@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>ISO 42001 Smart Audit Checklist</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f6f9;
+margin:40px;
+}
+
+h1{
+text-align:center;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+}
+
+th,td{
+border:1px solid #ccc;
+padding:8px;
+}
+
+th{
+background:#34495e;
+color:white;
+}
+
+select{
+width:110px;
+}
+
+textarea{
+width:100%;
+height:50px;
+}
+
+.remediation{
+color:#c0392b;
+font-size:13px;
+}
+
+button{
+padding:10px;
+margin:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>ISO 42001 – AI Governance Compliance Checklist</h1>
+
+<button onclick="exportCSV()">Export to Excel</button>
+
+<table id="table">
+
+<tr>
+<th>ID</th>
+<th>Control</th>
+<th>Status</th>
+<th>Remediation Guidance</th>
+<th>Notes</th>
+</tr>
+
+</table>
+
+<script>
+
+const controls=[
+
+{
+name:"AI Policy",
+guide:"Create a formal AI governance policy approved by executive leadership defining principles for responsible AI development and usage."
+},
+
+{
+name:"AI Acceptable Use Policy",
+guide:"Define rules for employee use of AI tools including restrictions, security controls, and permitted use cases."
+},
+
+{
+name:"AI Governance Structure",
+guide:"Establish AI governance board or risk council responsible for AI oversight and decision making."
+},
+
+{
+name:"Roles and Responsibilities",
+guide:"Create a RACI matrix assigning AI governance responsibilities across leadership, legal, engineering, and risk teams."
+},
+
+{
+name:"Segregation of Duties",
+guide:"Separate AI model development, testing, and approval roles to prevent conflicts of interest."
+},
+
+{
+name:"AI Skilled Personnel",
+guide:"Ensure personnel working with AI systems have documented training and competency in AI governance and ethics."
+},
+
+{
+name:"AI Infrastructure Security",
+guide:"Deploy AI systems in secure infrastructure environments with access control and monitoring."
+},
+
+{
+name:"AI Competency Management",
+guide:"Maintain skill development programs and certifications for AI teams."
+},
+
+{
+name:"AI Impact Assessment",
+guide:"Conduct AI impact assessments evaluating potential effects on individuals, society, and business operations."
+},
+
+{
+name:"AI Risk Identification",
+guide:"Create AI risk register documenting potential technical, ethical, and legal risks."
+},
+
+{
+name:"Context Assessment",
+guide:"Document operational context where AI systems will be used and identify environmental risks."
+},
+
+{
+name:"Stakeholder Impact",
+guide:"Identify stakeholders impacted by AI decisions including customers and internal teams."
+},
+
+{
+name:"Risk Mitigation",
+guide:"Develop risk treatment plans addressing AI risks including bias, privacy, and safety issues."
+},
+
+{
+name:"AI Design Governance",
+guide:"Define design review checkpoints ensuring AI systems meet governance and safety requirements."
+},
+
+{
+name:"Development Controls",
+guide:"Integrate governance requirements into AI SDLC processes."
+},
+
+{
+name:"Model Testing",
+guide:"Perform validation testing including bias detection and performance validation."
+},
+
+{
+name:"Deployment Approval",
+guide:"Create approval workflow before AI model deployment."
+},
+
+{
+name:"Performance Monitoring",
+guide:"Continuously monitor AI models for drift, anomalies, and performance degradation."
+},
+
+{
+name:"AI Incident Response",
+guide:"Create incident response procedures for AI system failures or harmful outputs."
+},
+
+{
+name:"Change Management",
+guide:"Track model updates and approve changes through change management processes."
+},
+
+{
+name:"AI Decommissioning",
+guide:"Define process for safely retiring AI systems and archiving associated data."
+},
+
+{
+name:"Data Collection Governance",
+guide:"Ensure data is collected legally and ethically."
+},
+
+{
+name:"Data Quality Management",
+guide:"Implement data validation and cleaning processes."
+},
+
+{
+name:"Bias Detection",
+guide:"Run fairness analysis to detect bias in datasets and models."
+},
+
+{
+name:"Data Annotation",
+guide:"Define controls for dataset labeling processes."
+},
+
+{
+name:"Dataset Documentation",
+guide:"Maintain metadata documentation for datasets."
+},
+
+{
+name:"Privacy Controls",
+guide:"Apply privacy safeguards and compliance requirements."
+},
+
+{
+name:"AI Transparency",
+guide:"Inform users when AI is being used and disclose limitations."
+},
+
+{
+name:"Decision Documentation",
+guide:"Document model logic and decision-making criteria."
+},
+
+{
+name:"User Communication",
+guide:"Provide guidance to users about AI system limitations."
+},
+
+{
+name:"Operational Controls",
+guide:"Define operational safeguards during AI system use."
+},
+
+{
+name:"Human Oversight",
+guide:"Implement human review mechanisms for high-risk decisions."
+},
+
+{
+name:"Outcome Monitoring",
+guide:"Monitor AI outputs for anomalies or harmful results."
+},
+
+{
+name:"Autonomous Decision Controls",
+guide:"Restrict fully autonomous decisions without oversight."
+},
+
+{
+name:"Vendor Risk Assessment",
+guide:"Assess third-party AI providers for governance and security risks."
+},
+
+{
+name:"External Model Evaluation",
+guide:"Evaluate external AI models before integration."
+},
+
+{
+name:"AI Contract Governance",
+guide:"Include AI governance clauses in vendor contracts."
+},
+
+{
+name:"Vendor Monitoring",
+guide:"Continuously monitor vendor AI performance and risk posture."
+}
+
+];
+
+let table=document.getElementById("table");
+
+controls.forEach((c,i)=>{
+
+let row=table.insertRow();
+
+row.innerHTML=`
+
+<td>${i+1}</td>
+
+<td>${c.name}</td>
+
+<td>
+
+<select onchange="updateGuide(this,'g${i}')">
+
+<option value="">Select</option>
+
+<option value="Yes">Yes</option>
+
+<option value="No">No</option>
+
+<option value="Partial">Partial</option>
+
+</select>
+
+</td>
+
+<td class="remediation" id="g${i}"></td>
+
+<td><textarea></textarea></td>
+
+`;
+
+});
+
+function updateGuide(select,id){
+
+let guide=document.getElementById(id);
+
+if(select.value=="No"){
+
+guide.innerText=controls[id.replace("g","")].guide;
+
+}else{
+
+guide.innerText="";
+
+}
+
+}
+
+function exportCSV(){
+
+let rows=document.querySelectorAll("table tr");
+
+let csv=[];
+
+rows.forEach(row=>{
+
+let cols=row.querySelectorAll("td,th");
+
+let data=[];
+
+cols.forEach(col=>{
+
+let select=col.querySelector("select");
+
+let textarea=col.querySelector("textarea");
+
+if(select) data.push(select.value);
+else if(textarea) data.push(textarea.value);
+else data.push(col.innerText);
+
+});
+
+csv.push(data.join(","));
+
+});
+
+let blob=new Blob([csv.join("\n")],{type:"text/csv"});
+
+let a=document.createElement("a");
+
+a.href=URL.createObjectURL(blob);
+
+a.download="ISO42001_Audit_Report.csv";
+
+a.click();
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ISO 42001 AI Controls Checklist</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#f4f6f9;
+margin:40px;
+}
+
+h1{
+text-align:center;
+}
+
+table{
+border-collapse:collapse;
+width:100%;
+background:white;
+}
+
+th,td{
+border:1px solid #ddd;
+padding:8px;
+text-align:left;
+}
+
+th{
+background:#2c3e50;
+color:white;
+}
+
+select{
+width:100px;
+}
+
+textarea{
+width:100%;
+height:40px;
+}
+
+button{
+padding:10px 15px;
+margin:10px;
+font-size:16px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>ISO 42001 – AI Management System Controls Checklist</h1>
+
+<button onclick="exportTableToCSV()">Export to Excel (CSV)</button>
+
+<table id="checklist">
+
+<tr>
+<th>ID</th>
+<th>Control</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+
+<script>
+
+const controls = [
+
+"AI Policy",
+"AI Acceptable Use Policy",
+"AI Governance Structure",
+"Roles and Responsibilities for AI",
+"Segregation of Duties",
+"AI Skilled Personnel",
+"AI Infrastructure Security",
+"AI Competency Management",
+"AI Impact Assessment Process",
+"AI Risk Identification",
+"AI Context Assessment",
+"Stakeholder Impact Analysis",
+"AI Risk Mitigation",
+"AI System Design Governance",
+"AI Development Controls",
+"Model Testing and Validation",
+"Deployment Approval",
+"AI Performance Monitoring",
+"AI Incident Response",
+"AI Change Management",
+"AI Decommissioning",
+"Data Collection Governance",
+"Data Quality Management",
+"Bias Detection",
+"Data Annotation Controls",
+"Dataset Documentation",
+"Privacy Controls for AI",
+"AI Transparency",
+"AI Decision Documentation",
+"User Communication",
+"Operational AI Controls",
+"Human Oversight",
+"Outcome Monitoring",
+"Autonomous Decision Control",
+"Vendor AI Risk Assessment",
+"External Model Evaluation",
+"AI Contract Governance",
+"Vendor Monitoring"
+
+];
+
+let table=document.getElementById("checklist");
+
+controls.forEach((c,i)=>{
+
+let row=table.insertRow();
+
+row.innerHTML=`
+
+<td>${i+1}</td>
+
+<td>${c}</td>
+
+<td>
+
+<select>
+
+<option value="">Select</option>
+
+<option>Yes</option>
+
+<option>No</option>
+
+<option>Partial</option>
+
+</select>
+
+</td>
+
+<td>
+
+<textarea></textarea>
+
+</td>
+
+`;
+
+});
+
+function exportTableToCSV(){
+
+let csv=[];
+
+let rows=document.querySelectorAll("table tr");
+
+rows.forEach(row=>{
+
+let cols=row.querySelectorAll("td,th");
+
+let data=[];
+
+cols.forEach(col=>{
+
+let select=col.querySelector("select");
+
+let textarea=col.querySelector("textarea");
+
+if(select) data.push(select.value);
+else if(textarea) data.push(textarea.value);
+else data.push(col.innerText);
+
+});
+
+csv.push(data.join(","));
+
+});
+
+let csvFile=new Blob([csv.join("\n")],{type:"text/csv"});
+
+let downloadLink=document.createElement("a");
+
+downloadLink.download="ISO42001_Audit_Checklist.csv";
+
+downloadLink.href=window.URL.createObjectURL(csvFile);
+
+downloadLink.click();
+
+}
+
+</script>
+
+</table>
+
+</body>
+
+</html>
