@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ISO/IEC 27004 Measurement Checklist</title>
+<style>
+body{font-family:Arial;background:#f4f6f9;margin:40px;}
+h1{text-align:center;}
+table{width:100%;border-collapse:collapse;background:white;}
+th,td{border:1px solid #ccc;padding:8px;}
+th{background:#34495e;color:white;}
+select{width:110px;}
+textarea{width:100%;height:50px;}
+.remediation{color:#c0392b;font-size:13px;}
+button{padding:10px;margin:10px;}
+</style>
+</head>
+<body>
+
+<h1>ISO/IEC 27004:2016 – Monitoring, Measurement, Analysis & Evaluation Checklist</h1>
+
+<button onclick="exportCSV()">Export to Excel (CSV)</button>
+
+<table id="table">
+<tr>
+<th>ID</th>
+<th>Control / Checkpoint</th>
+<th>Status</th>
+<th>Remediation Guidance</th>
+<th>Notes / Evidence</th>
+</tr>
+</table>
+
+<script>
+const controls=[
+
+{name:"Measurement Programme Policy", guide:"Create a formal measurement programme policy approved by executive leadership defining principles for monitoring, measurement, analysis and evaluation of information security."},
+{name:"Alignment with ISMS Objectives", guide:"Map all measures directly to ISMS objectives, business goals, and risk appetite."},
+{name:"Rationale Documentation", guide:"Document the rationale for the measurement programme per Clause 5."},
+{name:"Characteristics Definition", guide:"Define what, when, who and how for every measure per Clause 6."},
+{name:"Performance Measures Selection", guide:"Select and document performance measures ('Are we doing it?') e.g. training completion %."},
+{name:"Effectiveness Measures Selection", guide:"Select and document effectiveness measures ('Is it working?') e.g. incident reduction %."},
+{name:"Identify Information Needs (8.2)", guide:"Identify and prioritise information needs linked to ISMS objectives and risks."},
+{name:"Create Measures - Current Practices", guide:"Identify existing measurement practices in the organisation."},
+{name:"Create Measures - Develop/Update", guide:"Develop or update measures to fill identified gaps."},
+{name:"Create Measures - Document & Prioritise", guide:"Formally document and prioritise all measures."},
+{name:"Engage Management", guide:"Keep leadership engaged throughout the measure creation process."},
+{name:"Establish Procedures", guide:"Define detailed procedures: who collects data, how, frequency and tools."},
+{name:"Monitor & Measure", guide:"Implement systematic data collection for all defined measures."},
+{name:"Analyse Results", guide:"Perform statistical analysis, trend identification and root-cause analysis."},
+{name:"Evaluate Performance", guide:"Evaluate information security performance against predefined targets."},
+{name:"Evaluate ISMS Effectiveness", guide:"Evaluate overall ISMS effectiveness (processes + controls) per 27001 Clause 9.1."},
+{name:"Review & Improve Programme", guide:"Conduct annual review and continual improvement of the measurement programme."},
+{name:"Retain Documented Information", guide:"Retain all measurement records, calculations and reports."},
+{name:"Communicate Results", guide:"Establish clear reporting to stakeholders and management review."},
+{name:"Annex A Measurement Model", guide:"Apply the formal measurement model from Annex A (based on ISO 15939)."},
+{name:"Annex B Examples", guide:"Adopt and adapt suitable measurement constructs from Annex B as a starting point."},
+{name:"Annex C Free-text Template", guide:"For small organisations use the simple free-text template in Annex C."},
+{name:"Base Measure Definition", guide:"Define clear raw base measures (counts, raw data)."},
+{name:"Derived Measure Calculation", guide:"Define formulas for derived measures (ratios, percentages, averages)."},
+{name:"Indicator & Targets", guide:"Set realistic targets and traffic-light indicators for every measure."},
+{name:"Data Quality Assurance", guide:"Implement validation checks to ensure measurement data is accurate and complete."},
+{name:"Automated Dashboards", guide:"Deploy visual dashboards (Excel → Power BI → SIEM) for real-time monitoring."},
+{name:"Integration with BMIS", guide:"Measure every BMIS element and the 6 dynamic interconnections (Culture, Human Factors, Emergence, etc.)."},
+{name:"Link to ISO 27001 Clause 9.1", guide:"Fully support and evidence ISO 27001:2013 Clause 9.1 requirements."},
+{name:"Risk Register for Measurement Gaps", guide:"Maintain a risk register specifically for missing or failing metrics."},
+{name:"Stakeholder Involvement", guide:"Involve risk owners, process owners and leadership in defining measures."},
+{name:"Incident Response Metrics", guide:"Define and track MTTD, MTTR, MTTC and incident reduction trends."},
+{name:"Awareness Training Effectiveness", guide:"Measure phishing click rates, training completion and knowledge retention."},
+{name:"Vulnerability & Patch Management Metrics", guide:"Track % of vulnerabilities remediated within SLA."},
+{name:"Access Control Compliance", guide:"Measure least-privilege compliance and access review completion rates."},
+{name:"Third-Party & Vendor Metrics", guide:"Include specific metrics for supplier security performance and contract compliance."},
+{name:"Risk Treatment Effectiveness", guide:"Track reduction in residual risk scores over time."},
+{name:"Predictive & Forward-Looking Metrics", guide:"Develop leading indicators to predict emerging risks and control failures."}
+
+];
+
+let table=document.getElementById("table");
+
+controls.forEach((c,i)=>{
+let row=table.insertRow();
+row.innerHTML=`
+<td>${i+1}</td>
+<td>${c.name}</td>
+<td>
+<select onchange="updateGuide(this,'g${i}')">
+<option value="">Select</option>
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+<option value="Partial">Partial</option>
+</select>
+</td>
+<td class="remediation" id="g${i}"></td>
+<td><textarea></textarea></td>
+`;
+});
+
+function updateGuide(select,id){
+let guide=document.getElementById(id);
+if(select.value=="No"){
+let index=parseInt(id.replace("g",""));
+guide.innerText=controls[index].guide;
+}else{
+guide.innerText="";
+}
+}
+
+function exportCSV(){
+let rows=document.querySelectorAll("table tr");
+let csv=[];
+rows.forEach(row=>{
+let cols=row.querySelectorAll("td,th");
+let data=[];
+cols.forEach(col=>{
+let select=col.querySelector("select");
+let textarea=col.querySelector("textarea");
+if(select) data.push(select.value||"");
+else if(textarea) data.push((textarea.value||"").replace(/,/g,";"));
+else data.push(col.innerText.replace(/,/g,";"));
+});
+csv.push(data.join(","));
+});
+let blob=new Blob([csv.join("\n")],{type:"text/csv"});
+let a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="ISO27004_Measurement_Checklist.csv";
+a.click();
+}
+</script>
+
+</body>
+</html>

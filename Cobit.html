@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>COBIT 2019 – 6 Principles & 40 Objectives Checklist</title>
+<style>
+body{font-family:Arial;background:#f4f6f9;margin:40px;}
+h1{text-align:center;}
+table{width:100%;border-collapse:collapse;background:white;}
+th,td{border:1px solid #ccc;padding:8px;}
+th{background:#34495e;color:white;}
+select{width:110px;}
+textarea{width:100%;height:50px;}
+.remediation{color:#c0392b;font-size:13px;}
+button{padding:10px;margin:10px;}
+</style>
+</head>
+<body>
+
+<h1>COBIT 2019 – 6 Principles & 40 Governance Objectives Checklist</h1>
+
+<button onclick="exportCSV()">Export to Excel (CSV)</button>
+
+<table id="table">
+<tr>
+<th>ID</th>
+<th>Control / Checkpoint</th>
+<th>Status</th>
+<th>Remediation Guidance</th>
+<th>Notes / Evidence</th>
+</tr>
+</table>
+
+<script>
+const controls=[
+
+{name:"Principle 1: Meet Stakeholder Needs", guide:"Translate stakeholder needs into specific, actionable governance objectives and ensure they are satisfied."},
+{name:"Principle 2: Cover the Enterprise End-to-End", guide:"Ensure the governance system addresses all IT-related activities across the entire enterprise."},
+{name:"Principle 3: Apply a Single Integrated Framework", guide:"Use COBIT 2019 as the single integrated framework for governance and management of enterprise I&T."},
+{name:"Principle 4: Enable a Holistic Approach", guide:"Apply a holistic approach considering all enablers (processes, structures, culture, information, etc.)."},
+{name:"Principle 5: Separate Governance From Management", guide:"Clearly separate governance responsibilities (EDM domain) from management activities."},
+{name:"Principle 6: Tailor the Governance System to the Enterprise’s Needs", guide:"Tailor the governance system using the 6 design factors to fit the specific enterprise context."},
+
+{name:"EDM01 - Ensured Governance Framework Setting and Maintenance", guide:"Establish and maintain an effective governance framework for the enterprise."},
+{name:"EDM02 - Ensured Benefits Delivery", guide:"Ensure that the realization of benefits from I&T investments is optimised."},
+{name:"EDM03 - Ensured Risk Optimization", guide:"Optimise the risk posture of the enterprise."},
+{name:"EDM04 - Ensured Resource Optimization", guide:"Ensure that the I&T resources are optimised."},
+{name:"EDM05 - Ensured Stakeholder Transparency", guide:"Ensure transparency and effective stakeholder communication."},
+{name:"APO01 - Managed I&T Management Framework", guide:"Establish and maintain an I&T management framework aligned with enterprise governance."},
+{name:"APO02 - Managed Strategy", guide:"Define and communicate the I&T strategy aligned with enterprise strategy."},
+{name:"APO03 - Managed Enterprise Architecture", guide:"Develop and maintain an enterprise architecture aligned with business goals."},
+{name:"APO04 - Managed Innovation", guide:"Manage innovation initiatives to support business objectives."},
+{name:"APO05 - Managed Portfolio", guide:"Manage the portfolio of I&T services and investments."},
+{name:"APO06 - Managed Budget and Costs", guide:"Manage I&T budgets and costs to deliver value."},
+{name:"APO07 - Managed Human Resources", guide:"Acquire, develop and manage I&T human resources."},
+{name:"APO08 - Managed Relationships", guide:"Manage relationships with business stakeholders."},
+{name:"APO09 - Managed Service Agreements", guide:"Manage service agreements and contracts with internal and external providers."},
+{name:"APO10 - Managed Vendors", guide:"Manage vendors and third-party relationships."},
+{name:"APO11 - Managed Quality", guide:"Manage the quality of I&T services and processes."},
+{name:"APO12 - Managed Risk", guide:"Manage enterprise I&T risk."},
+{name:"APO13 - Managed Security", guide:"Manage the security of information and I&T assets."},
+{name:"APO14 - Managed Data", guide:"Manage enterprise data and information assets."},
+{name:"BAI01 - Managed Programs", guide:"Manage I&T programs to deliver business value."},
+{name:"BAI02 - Managed Requirements Definition", guide:"Manage business and technical requirements."},
+{name:"BAI03 - Managed Solutions Identification and Build", guide:"Identify, build and test solutions."},
+{name:"BAI04 - Managed Availability and Capacity", guide:"Manage availability and capacity of I&T resources."},
+{name:"BAI05 - Managed Organizational Change", guide:"Manage organisational change related to I&T."},
+{name:"BAI06 - Managed IT Changes", guide:"Manage I&T changes in a controlled manner."},
+{name:"BAI07 - Managed IT Change Acceptance and Transition", guide:"Manage acceptance and transition of changes into production."},
+{name:"BAI08 - Managed Knowledge", guide:"Manage knowledge and intellectual assets."},
+{name:"BAI09 - Managed Assets", guide:"Manage I&T assets."},
+{name:"BAI10 - Managed Configuration", guide:"Manage configuration of I&T assets."},
+{name:"BAI11 - Managed Projects", guide:"Manage I&T projects."},
+{name:"DSS01 - Managed Operations", guide:"Manage day-to-day I&T operations."},
+{name:"DSS02 - Managed Service Requests and Incidents", guide:"Manage service requests and incidents."},
+{name:"DSS03 - Managed Problems", guide:"Manage problems to prevent recurrence."},
+{name:"DSS04 - Managed Continuity", guide:"Ensure business continuity and disaster recovery."},
+{name:"DSS05 - Managed Security Services", guide:"Manage security services and controls."},
+{name:"DSS06 - Managed Business Process Controls", guide:"Manage business process controls."},
+{name:"MEA01 - Managed Performance and Conformance Monitoring", guide:"Monitor, measure and report on I&T performance and conformance."},
+{name:"MEA02 - Managed System of Internal Control", guide:"Monitor and evaluate the system of internal control."},
+{name:"MEA03 - Managed Compliance with External Requirements", guide:"Monitor compliance with external requirements."},
+{name:"MEA04 - Managed Assurance", guide:"Provide assurance on the effectiveness of the governance system."}
+
+];
+
+let table=document.getElementById("table");
+
+controls.forEach((c,i)=>{
+let row=table.insertRow();
+row.innerHTML=`
+<td>${i+1}</td>
+<td>${c.name}</td>
+<td>
+<select onchange="updateGuide(this,'g${i}')">
+<option value="">Select</option>
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+<option value="Partial">Partial</option>
+</select>
+</td>
+<td class="remediation" id="g${i}"></td>
+<td><textarea></textarea></td>
+`;
+});
+
+function updateGuide(select,id){
+let guide=document.getElementById(id);
+if(select.value=="No"){
+let index=parseInt(id.replace("g",""));
+guide.innerText=controls[index].guide;
+}else{
+guide.innerText="";
+}
+}
+
+function exportCSV(){
+let rows=document.querySelectorAll("table tr");
+let csv=[];
+rows.forEach(row=>{
+let cols=row.querySelectorAll("td,th");
+let data=[];
+cols.forEach(col=>{
+let select=col.querySelector("select");
+let textarea=col.querySelector("textarea");
+if(select) data.push(select.value||"");
+else if(textarea) data.push((textarea.value||"").replace(/,/g,";"));
+else data.push(col.innerText.replace(/,/g,";"));
+});
+csv.push(data.join(","));
+});
+let blob=new Blob([csv.join("\n")],{type:"text/csv"});
+let a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="COBIT2019_Governance_Checklist.csv";
+a.click();
+}
+</script>
+
+</body>
+</html>

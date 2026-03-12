@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISO 27701:2019 Complete 184 Controls + 2025 Mapping</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f0f4f8;
+            margin: 20px;
+            font-size: 13px;
+        }
+        h1 {
+            text-align: center;
+            color: #1e3a5f;
+            margin-bottom: 5px;
+        }
+        .sub {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        .toolbar {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        button {
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        button:hover {
+            background: #0f2a44;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        th {
+            background: #1e3a5f;
+            color: white;
+            padding: 10px 5px;
+            font-weight: 600;
+            font-size: 0.8em;
+            text-align: left;
+            border-right: 1px solid #2e557a;
+            white-space: nowrap;
+        }
+        th:last-child { border-right: none; }
+        td {
+            border: 1px solid #cbd5e1;
+            padding: 6px 4px;
+            vertical-align: top;
+        }
+        tr:hover td {
+            background: #f8fafc;
+        }
+        select, textarea {
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #94a3b8;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 12px;
+        }
+        textarea {
+            height: 40px;
+            resize: vertical;
+        }
+        .remediation {
+            color: #b91c1c;
+            font-size: 11px;
+            line-height: 1.3;
+            max-width: 200px;
+            white-space: pre-wrap;
+        }
+        .badge {
+            background: #1e3a5f;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #475569;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔐 ISO/IEC 27701:2019 COMPLETE 184 CONTROLS AUDIT CHECKLIST</h1>
+    <div class="sub">with mapping to ISO 27701:2025 (78 controls) – 114 ISO 27002 + 49 PII + 21 modified = 184</div>
+
+    <div class="toolbar">
+        <button onclick="exportCSV()">📥 EXPORT TO CSV (EXCEL)</button>
+        <button onclick="resetAll()">🔄 RESET ALL FIELDS</button>
+    </div>
+
+    <table id="auditTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Control Area / Name</th>
+                <th>2019 Control Ref</th>
+                <th>2025 Mapping</th>
+                <th>Status</th>
+                <th>Remediation Guidance</th>
+                <th>Notes / Evidence</th>
+                <th>Audit Result</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!-- JavaScript se 184 rows generate honge -->
+        </tbody>
+    </table>
+
+    <div class="footer">
+        ✅ Total 184 controls: 114 ISO 27002:2013 (A.5–A.18) + 31 PII Controller + 18 PII Processor + 21 Modified/Integrated controls. 
+        Select "No" to see remediation. Export to save your audit.
+    </div>
+
+    <script>
+        // ---------- COMPLETE 184 CONTROLS DATA ----------
+        // ISO 27002:2013 – 114 controls (A.5 to A.18)
+        const iso27002controls = [
+            // A.5 Information security policies (2)
+            { area: "Policies", ref2019: "A.5.1.1 Policies for information security", ref2025: "ISMS-01", rem: "Establish and approve information security policy document." },
+            { area: "Policies", ref2019: "A.5.1.2 Review of the policies for information security", ref2025: "ISMS-01", rem: "Review policy at planned intervals." },
+            // A.6 Organization of information security (7)
+            { area: "Organization", ref2019: "A.6.1.1 Information security roles and responsibilities", ref2025: "ISMS-02", rem: "Define and allocate all security responsibilities." },
+            { area: "Organization", ref2019: "A.6.1.2 Segregation of duties", ref2025: "ISMS-03", rem: "Segregate conflicting duties." },
+            { area: "Organization", ref2019: "A.6.1.3 Contact with authorities", ref2025: "ISMS-04", rem: "Maintain contacts with authorities." },
+            { area: "Organization", ref2019: "A.6.1.4 Contact with special interest groups", ref2025: "ISMS-04", rem: "Establish contacts with security groups." },
+            { area: "Organization", ref2019: "A.6.1.5 Information security in project management", ref2025: "ISMS-05", rem: "Integrate security into project management." },
+            { area: "Organization", ref2019: "A.6.2.1 Mobile device policy", ref2025: "ISMS-06", rem: "Adopt policy for mobile devices." },
+            { area: "Organization", ref2019: "A.6.2.2 Teleworking", ref2025: "ISMS-06", rem: "Implement security for teleworking." },
+            // A.7 Human resource security (6)
+            { area: "HR Security", ref2019: "A.7.1.1 Screening", ref2025: "ISMS-07", rem: "Conduct background verification." },
+            { area: "HR Security", ref2019: "A.7.1.2 Terms and conditions of employment", ref2025: "ISMS-07", rem: "Include security in employment contracts." },
+            { area: "HR Security", ref2019: "A.7.2.1 Management responsibilities", ref2025: "ISMS-08", rem: "Ensure employees apply security." },
+            { area: "HR Security", ref2019: "A.7.2.2 Information security awareness, education and training", ref2025: "ISMS-08", rem: "Provide regular security training." },
+            { area: "HR Security", ref2019: "A.7.2.3 Disciplinary process", ref2025: "ISMS-09", rem: "Have formal disciplinary process." },
+            { area: "HR Security", ref2019: "A.7.3.1 Termination or change of employment responsibilities", ref2025: "ISMS-09", rem: "Manage exit process securely." },
+            // A.8 Asset management (10)
+            { area: "Asset Management", ref2019: "A.8.1.1 Inventory of assets", ref2025: "ISMS-10", rem: "Maintain asset inventory." },
+            { area: "Asset Management", ref2019: "A.8.1.2 Ownership of assets", ref2025: "ISMS-10", rem: "Assign asset owners." },
+            { area: "Asset Management", ref2019: "A.8.1.3 Acceptable use of assets", ref2025: "ISMS-11", rem: "Define acceptable use rules." },
+            { area: "Asset Management", ref2019: "A.8.1.4 Return of assets", ref2025: "ISMS-11", rem: "Ensure asset return upon termination." },
+            { area: "Asset Management", ref2019: "A.8.2.1 Classification of information", ref2025: "ISMS-12", rem: "Classify information by value." },
+            { area: "Asset Management", ref2019: "A.8.2.2 Labelling of information", ref2025: "ISMS-12", rem: "Implement labelling procedures." },
+            { area: "Asset Management", ref2019: "A.8.2.3 Handling of assets", ref2025: "ISMS-13", rem: "Develop handling procedures." },
+            { area: "Asset Management", ref2019: "A.8.3.1 Management of removable media", ref2025: "ISMS-13", rem: "Control removable media." },
+            { area: "Asset Management", ref2019: "A.8.3.2 Disposal of media", ref2025: "ISMS-14", rem: "Secure disposal of media." },
+            { area: "Asset Management", ref2019: "A.8.3.3 Physical media transfer", ref2025: "ISMS-14", rem: "Protect media during transport." },
+            // A.9 Access control (14)
+            { area: "Access Control", ref2019: "A.9.1.1 Access control policy", ref2025: "ISMS-15", rem: "Establish access control policy." },
+            { area: "Access Control", ref2019: "A.9.1.2 Access to networks and network services", ref2025: "ISMS-15", rem: "Restrict network access." },
+            { area: "Access Control", ref2019: "A.9.2.1 User registration and de-registration", ref2025: "ISMS-16", rem: "Implement formal user registration." },
+            { area: "Access Control", ref2019: "A.9.2.2 User access provisioning", ref2025: "ISMS-16", rem: "Provision access rights." },
+            { area: "Access Control", ref2019: "A.9.2.3 Management of privileged access rights", ref2025: "ISMS-17", rem: "Control privileged access." },
+            { area: "Access Control", ref2019: "A.9.2.4 Management of secret authentication information of users", ref2025: "ISMS-17", rem: "Handle passwords securely." },
+            { area: "Access Control", ref2019: "A.9.2.5 Review of user access rights", ref2025: "ISMS-18", rem: "Periodic access reviews." },
+            { area: "Access Control", ref2019: "A.9.2.6 Removal or adjustment of access rights", ref2025: "ISMS-18", rem: "Remove access upon change." },
+            { area: "Access Control", ref2019: "A.9.3.1 Use of secret authentication information", ref2025: "ISMS-19", rem: "Enforce password policy." },
+            { area: "Access Control", ref2019: "A.9.4.1 Information access restriction", ref2025: "ISMS-20", rem: "Restrict access to information." },
+            { area: "Access Control", ref2019: "A.9.4.2 Secure log-on procedures", ref2025: "ISMS-20", rem: "Implement secure logon." },
+            { area: "Access Control", ref2019: "A.9.4.3 Password management system", ref2025: "ISMS-21", rem: "Use password management tools." },
+            { area: "Access Control", ref2019: "A.9.4.4 Use of privileged utility programs", ref2025: "ISMS-21", rem: "Restrict utility programs." },
+            { area: "Access Control", ref2019: "A.9.4.5 Access control to program source code", ref2025: "ISMS-22", rem: "Protect source code." },
+            // A.10 Cryptography (2)
+            { area: "Cryptography", ref2019: "A.10.1.1 Policy on use of cryptographic controls", ref2025: "ISMS-23", rem: "Develop crypto policy." },
+            { area: "Cryptography", ref2019: "A.10.1.2 Key management", ref2025: "ISMS-23", rem: "Manage cryptographic keys." },
+            // A.11 Physical and environmental security (15)
+            { area: "Physical Security", ref2019: "A.11.1.1 Physical security perimeter", ref2025: "ISMS-24", rem: "Define security perimeter." },
+            { area: "Physical Security", ref2019: "A.11.1.2 Physical entry controls", ref2025: "ISMS-24", rem: "Control physical entry." },
+            { area: "Physical Security", ref2019: "A.11.1.3 Securing offices, rooms and facilities", ref2025: "ISMS-25", rem: "Secure offices and rooms." },
+            { area: "Physical Security", ref2019: "A.11.1.4 Protecting against external and environmental threats", ref2025: "ISMS-25", rem: "Protect against threats." },
+            { area: "Physical Security", ref2019: "A.11.1.5 Working in secure areas", ref2025: "ISMS-26", rem: "Rules for secure areas." },
+            { area: "Physical Security", ref2019: "A.11.1.6 Delivery and loading areas", ref2025: "ISMS-26", rem: "Secure delivery areas." },
+            { area: "Physical Security", ref2019: "A.11.2.1 Equipment siting and protection", ref2025: "ISMS-27", rem: "Protect equipment." },
+            { area: "Physical Security", ref2019: "A.11.2.2 Supporting utilities", ref2025: "ISMS-27", rem: "Ensure utility reliability." },
+            { area: "Physical Security", ref2019: "A.11.2.3 Cabling security", ref2025: "ISMS-28", rem: "Protect cabling." },
+            { area: "Physical Security", ref2019: "A.11.2.4 Equipment maintenance", ref2025: "ISMS-28", rem: "Maintain equipment." },
+            { area: "Physical Security", ref2019: "A.11.2.5 Removal of assets", ref2025: "ISMS-29", rem: "Control asset removal." },
+            { area: "Physical Security", ref2019: "A.11.2.6 Security of equipment and assets off-premises", ref2025: "ISMS-29", rem: "Protect off-site assets." },
+            { area: "Physical Security", ref2019: "A.11.2.7 Secure disposal or reuse of equipment", ref2025: "ISMS-30", rem: "Sanitize equipment before disposal." },
+            { area: "Physical Security", ref2019: "A.11.2.8 Unattended user equipment", ref2025: "ISMS-30", rem: "Protect unattended equipment." },
+            { area: "Physical Security", ref2019: "A.11.2.9 Clear desk and clear screen policy", ref2025: "ISMS-31", rem: "Implement clear desk policy." },
+            // A.12 Operations security (14)
+            { area: "Operations Security", ref2019: "A.12.1.1 Documented operating procedures", ref2025: "ISMS-32", rem: "Document procedures." },
+            { area: "Operations Security", ref2019: "A.12.1.2 Change management", ref2025: "ISMS-32", rem: "Formal change process." },
+            { area: "Operations Security", ref2019: "A.12.1.3 Capacity management", ref2025: "ISMS-33", rem: "Monitor capacity." },
+            { area: "Operations Security", ref2019: "A.12.1.4 Separation of development, testing and operational environments", ref2025: "ISMS-33", rem: "Separate environments." },
+            { area: "Operations Security", ref2019: "A.12.2.1 Controls against malware", ref2025: "ISMS-34", rem: "Anti-malware controls." },
+            { area: "Operations Security", ref2019: "A.12.3.1 Information backup", ref2025: "ISMS-35", rem: "Regular backups." },
+            { area: "Operations Security", ref2019: "A.12.4.1 Event logging", ref2025: "ISMS-36", rem: "Enable logging." },
+            { area: "Operations Security", ref2019: "A.12.4.2 Protection of log information", ref2025: "ISMS-36", rem: "Protect logs." },
+            { area: "Operations Security", ref2019: "A.12.4.3 Administrator and operator logs", ref2025: "ISMS-37", rem: "Review admin logs." },
+            { area: "Operations Security", ref2019: "A.12.4.4 Clock synchronization", ref2025: "ISMS-37", rem: "Synchronize clocks." },
+            { area: "Operations Security", ref2019: "A.12.5.1 Installation of software on operational systems", ref2025: "ISMS-38", rem: "Control software install." },
+            { area: "Operations Security", ref2019: "A.12.6.1 Management of technical vulnerabilities", ref2025: "ISMS-39", rem: "Vulnerability management." },
+            { area: "Operations Security", ref2019: "A.12.6.2 Restrictions on software installation", ref2025: "ISMS-39", rem: "Restrict user installs." },
+            { area: "Operations Security", ref2019: "A.12.7.1 Information systems audit controls", ref2025: "ISMS-40", rem: "Audit controls." },
+            // A.13 Communications security (7)
+            { area: "Communications Security", ref2019: "A.13.1.1 Network controls", ref2025: "ISMS-41", rem: "Secure networks." },
+            { area: "Communications Security", ref2019: "A.13.1.2 Security of network services", ref2025: "ISMS-41", rem: "Secure network services." },
+            { area: "Communications Security", ref2019: "A.13.1.3 Segregation in networks", ref2025: "ISMS-42", rem: "Network segregation." },
+            { area: "Communications Security", ref2019: "A.13.2.1 Information transfer policies and procedures", ref2025: "ISMS-43", rem: "Policies for info transfer." },
+            { area: "Communications Security", ref2019: "A.13.2.2 Agreements on information transfer", ref2025: "ISMS-43", rem: "Transfer agreements." },
+            { area: "Communications Security", ref2019: "A.13.2.3 Electronic messaging", ref2025: "ISMS-44", rem: "Secure messaging." },
+            { area: "Communications Security", ref2019: "A.13.2.4 Confidentiality or non‑disclosure agreements", ref2025: "ISMS-44", rem: "Use NDAs." },
+            // A.14 System acquisition, development and maintenance (13)
+            { area: "System Acquisition", ref2019: "A.14.1.1 Information security requirements analysis", ref2025: "ISMS-45", rem: "Include security in requirements." },
+            { area: "System Acquisition", ref2019: "A.14.1.2 Securing application services on public networks", ref2025: "ISMS-45", rem: "Secure public apps." },
+            { area: "System Acquisition", ref2019: "A.14.1.3 Protecting application services transactions", ref2025: "ISMS-46", rem: "Protect transactions." },
+            { area: "System Acquisition", ref2019: "A.14.2.1 Secure development policy", ref2025: "ISMS-47", rem: "Adopt secure dev policy." },
+            { area: "System Acquisition", ref2019: "A.14.2.2 System change control procedures", ref2025: "ISMS-47", rem: "Change control." },
+            { area: "System Acquisition", ref2019: "A.14.2.3 Technical review of applications after operating platform changes", ref2025: "ISMS-48", rem: "Review after platform changes." },
+            { area: "System Acquisition", ref2019: "A.14.2.4 Restrictions on changes to software packages", ref2025: "ISMS-48", rem: "Control package changes." },
+            { area: "System Acquisition", ref2019: "A.14.2.5 Secure system engineering principles", ref2025: "ISMS-49", rem: "Use secure engineering." },
+            { area: "System Acquisition", ref2019: "A.14.2.6 Secure development environment", ref2025: "ISMS-49", rem: "Secure dev environment." },
+            { area: "System Acquisition", ref2019: "A.14.2.7 Outsourced development", ref2025: "ISMS-50", rem: "Secure outsourced dev." },
+            { area: "System Acquisition", ref2019: "A.14.2.8 System security testing", ref2025: "ISMS-50", rem: "Perform security testing." },
+            { area: "System Acquisition", ref2019: "A.14.2.9 System acceptance testing", ref2025: "ISMS-51", rem: "Acceptance testing." },
+            { area: "System Acquisition", ref2019: "A.14.3.1 Protection of test data", ref2025: "ISMS-51", rem: "Protect test data." },
+            // A.15 Supplier relationships (5)
+            { area: "Supplier Relationships", ref2019: "A.15.1.1 Information security policy for supplier relationships", ref2025: "ISMS-52", rem: "Supplier security policy." },
+            { area: "Supplier Relationships", ref2019: "A.15.1.2 Addressing security within supplier agreements", ref2025: "ISMS-52", rem: "Include security in agreements." },
+            { area: "Supplier Relationships", ref2019: "A.15.1.3 Information and communication technology supply chain", ref2025: "ISMS-53", rem: "Manage supply chain risks." },
+            { area: "Supplier Relationships", ref2019: "A.15.2.1 Monitoring and review of supplier services", ref2025: "ISMS-54", rem: "Monitor supplier compliance." },
+            { area: "Supplier Relationships", ref2019: "A.15.2.2 Managing changes to supplier services", ref2025: "ISMS-54", rem: "Manage supplier changes." },
+            // A.16 Information security incident management (7)
+            { area: "Incident Management", ref2019: "A.16.1.1 Responsibilities and procedures", ref2025: "ISMS-55", rem: "Incident response procedures." },
+            { area: "Incident Management", ref2019: "A.16.1.2 Reporting information security events", ref2025: "ISMS-55", rem: "Establish reporting." },
+            { area: "Incident Management", ref2019: "A.16.1.3 Reporting information security weaknesses", ref2025: "ISMS-56", rem: "Report weaknesses." },
+            { area: "Incident Management", ref2019: "A.16.1.4 Assessment of and decision on information security events", ref2025: "ISMS-56", rem: "Assess events." },
+            { area: "Incident Management", ref2019: "A.16.1.5 Response to information security incidents", ref2025: "ISMS-57", rem: "Respond to incidents." },
+            { area: "Incident Management", ref2019: "A.16.1.6 Learning from information security incidents", ref2025: "ISMS-57", rem: "Learn and improve." },
+            { area: "Incident Management", ref2019: "A.16.1.7 Collection of evidence", ref2025: "ISMS-58", rem: "Forensic evidence." },
+            // A.17 Information security aspects of business continuity management (4)
+            { area: "Business Continuity", ref2019: "A.17.1.1 Planning information security continuity", ref2025: "ISMS-59", rem: "Plan for continuity." },
+            { area: "Business Continuity", ref2019: "A.17.1.2 Implementing information security continuity", ref2025: "ISMS-59", rem: "Implement continuity." },
+            { area: "Business Continuity", ref2019: "A.17.1.3 Verify, review and evaluate information security continuity", ref2025: "ISMS-60", rem: "Test continuity." },
+            { area: "Business Continuity", ref2019: "A.17.2.1 Availability of information processing facilities", ref2025: "ISMS-60", rem: "Ensure availability." },
+            // A.18 Compliance (8)
+            { area: "Compliance", ref2019: "A.18.1.1 Identification of applicable legislation", ref2025: "ISMS-61", rem: "Identify legal requirements." },
+            { area: "Compliance", ref2019: "A.18.1.2 Intellectual property rights", ref2025: "ISMS-61", rem: "Protect IPR." },
+            { area: "Compliance", ref2019: "A.18.1.3 Protection of records", ref2025: "ISMS-62", rem: "Protect records." },
+            { area: "Compliance", ref2019: "A.18.1.4 Privacy and protection of personally identifiable information", ref2025: "ISMS-62", rem: "Protect PII." },
+            { area: "Compliance", ref2019: "A.18.1.5 Regulation of cryptographic controls", ref2025: "ISMS-63", rem: "Comply with crypto regs." },
+            { area: "Compliance", ref2019: "A.18.2.1 Independent review of information security", ref2025: "ISMS-64", rem: "Independent audits." },
+            { area: "Compliance", ref2019: "A.18.2.2 Compliance with security policies and standards", ref2025: "ISMS-64", rem: "Regular compliance checks." },
+            { area: "Compliance", ref2019: "A.18.2.3 Technical compliance review", ref2025: "ISMS-65", rem: "Technical reviews." }
+        ]; // 114 controls
+
+        // PII Controller controls (Annex A of ISO 27701) – 31 controls
+        const piiController = [
+            { area: "Controller - Consent", ref2019: "A.7.1.1 Obtain consent", ref2025: "PII-C16", rem: "Implement lawful consent mechanisms." },
+            { area: "Controller - Consent records", ref2019: "A.7.1.2 Consent records", ref2025: "PII-C17", rem: "Maintain records of consent." },
+            { area: "Controller - Purpose limitation", ref2019: "A.2.1.1 Determine purposes", ref2025: "PII-C01", rem: "Document processing purposes." },
+            { area: "Controller - Legal basis", ref2019: "A.2.1.2 Identify legal basis", ref2025: "PII-C02", rem: "Document legal basis for each processing." },
+            { area: "Controller - Data subject rights", ref2019: "A.3.1.1 Determine information to PII principals", ref2025: "PII-C03", rem: "Provide privacy notice." },
+            { area: "Controller - Right to access", ref2019: "A.3.2.1 Provide access", ref2025: "PII-C04", rem: "Enable data subject access." },
+            { area: "Controller - Right to rectification", ref2019: "A.3.2.2 Rectification", ref2025: "PII-C05", rem: "Allow correction of data." },
+            { area: "Controller - Right to erasure", ref2019: "A.3.2.3 Erasure", ref2025: "PII-C06", rem: "Implement deletion processes." },
+            { area: "Controller - Objection", ref2019: "A.3.2.4 Objection handling", ref2025: "PII-C07", rem: "Handle objections." },
+            { area: "Controller - Privacy by design", ref2019: "A.4.1.1 Privacy in development", ref2025: "PII-C08", rem: "Embed privacy in projects." },
+            { area: "Controller - Data minimization", ref2019: "A.4.2.1 Limit collection", ref2025: "PII-C09", rem: "Collect only necessary data." },
+            { area: "Controller - PII sharing", ref2019: "A.5.1.1 Identify sharing", ref2025: "PII-C10", rem: "Document data sharing." },
+            { area: "Controller - Transfer agreements", ref2019: "A.5.1.2 Agreements", ref2025: "PII-C11", rem: "Formal transfer agreements." },
+            { area: "Controller - Cross-border transfer", ref2019: "A.17.1.1 International transfers", ref2025: "PII-C30", rem: "Ensure lawful transfer mechanisms." },
+            { area: "Controller - Records of processing", ref2019: "A.11.1.1 Maintain records", ref2025: "PII-C22", rem: "Article 30 style records." },
+            { area: "Controller - DPIA", ref2019: "A.10.1.1 Conduct DPIA", ref2025: "PII-C20", rem: "Perform DPIAs for high risk." },
+            { area: "Controller - DPIA review", ref2019: "A.10.2.1 Review DPIA", ref2025: "PII-C21", rem: "Review DPIAs periodically." },
+            { area: "Controller - Breach notification to authority", ref2019: "A.13.1.1 Notify supervisory authority", ref2025: "PII-C24", rem: "72-hour breach notification." },
+            { area: "Controller - Breach communication to data subject", ref2019: "A.14.1.1 Communicate breach", ref2025: "PII-C26", rem: "Notify affected individuals." },
+            { area: "Controller - Processor contracts", ref2019: "A.16.1.1 Contractual obligations", ref2025: "PII-C28", rem: "Include data processing clauses." },
+            { area: "Controller - Sub-processor authorization", ref2019: "A.16.2.1 Sub-processor approval", ref2025: "PII-C29", rem: "Get consent for sub-processors." },
+            { area: "Controller - Training and awareness", ref2019: "A.9.1.1 Privacy training", ref2025: "PII-C19", rem: "Train staff on privacy." },
+            { area: "Controller - Codes of conduct", ref2019: "A.15.1.1 Adhere to codes", ref2025: "PII-C27", rem: "Consider certification." },
+            { area: "Controller - Security of processing", ref2019: "A.12.1.1 Security measures", ref2025: "PII-C23", rem: "Implement appropriate security." },
+            { area: "Controller - Storage limitation", ref2019: "A.4.3.1 Retention", ref2025: "PII-C09", rem: "Define retention periods." },
+            { area: "Controller - Accuracy", ref2019: "A.4.4.1 Keep data accurate", ref2025: "PII-C05", rem: "Maintain data accuracy." },
+            { area: "Controller - Controller's obligations", ref2019: "A.8.1.1 Compliance determination", ref2025: "PII-C18", rem: "Map all obligations." },
+            { area: "Controller - Demonstration of compliance", ref2019: "A.8.2.1 Evidence", ref2025: "PII-C18", rem: "Provide evidence to authorities." },
+            { area: "Controller - Cooperation with authorities", ref2019: "A.8.3.1 Cooperate", ref2025: "PII-C18", rem: "Cooperate with supervisory authorities." },
+            { area: "Controller - Notification of changes", ref2019: "A.5.2.1 Inform about changes", ref2025: "PII-C12", rem: "Notify data subjects of changes." },
+            { area: "Controller - Transparency", ref2019: "A.6.1.1 Privacy notices", ref2025: "PII-C14", rem: "Provide clear notices." }
+        ]; // 31
+
+        // PII Processor controls (Annex B of ISO 27701) – 18 controls
+        const piiProcessor = [
+            { area: "Processor - Instructions", ref2019: "B.2.1.1 Follow instructions", ref2025: "PII-P01", rem: "Process only on documented instructions." },
+            { area: "Processor - Sub-processing", ref2019: "B.8.1.1 Sub-processor authorization", ref2025: "PII-P08", rem: "Obtain controller's consent for sub-processors." },
+            { area: "Processor - Sub-processor list", ref2019: "B.13.1.1 Maintain sub-processor list", ref2025: "PII-P16", rem: "Keep list of sub-processors." },
+            { area: "Processor - Confidentiality", ref2019: "B.3.1.1 Confidentiality commitments", ref2025: "PII-P03", rem: "Ensure personnel confidentiality." },
+            { area: "Processor - Security measures", ref2019: "B.4.1.1 Implement security", ref2025: "PII-P03", rem: "Implement technical measures." },
+            { area: "Processor - Records of processing", ref2019: "B.5.1.1 Maintain records", ref2025: "PII-P04", rem: "Keep processing records." },
+            { area: "Processor - Breach notification to controller", ref2019: "B.6.1.1 Notify controller", ref2025: "PII-P05", rem: "Notify controller without undue delay." },
+            { area: "Processor - Breach details", ref2019: "B.6.2.1 Provide breach details", ref2025: "PII-P06", rem: "Provide all breach information." },
+            { area: "Processor - DPIA support", ref2019: "B.7.1.1 Assist controller", ref2025: "PII-P07", rem: "Help controller with DPIAs." },
+            { area: "Processor - Cross-border transfer", ref2019: "B.9.1.1 Transfer only on instruction", ref2025: "PII-P10", rem: "No transfers without authorization." },
+            { area: "Processor - Transfer safeguards", ref2019: "B.9.2.1 Implement safeguards", ref2025: "PII-P11", rem: "Use appropriate transfer tools." },
+            { area: "Processor - Cooperation with controller", ref2019: "B.10.1.1 Cooperate with controller", ref2025: "PII-P12", rem: "Respond to data subject requests via controller." },
+            { area: "Processor - Deletion/return", ref2019: "B.11.1.1 Delete or return", ref2025: "PII-P13", rem: "Delete/return data after service ends." },
+            { area: "Processor - Audit rights", ref2019: "B.12.1.1 Allow audits", ref2025: "PII-P14", rem: "Permit controller audits." },
+            { area: "Processor - Inspection support", ref2019: "B.12.2.1 Support inspections", ref2025: "PII-P15", rem: "Facilitate inspections." },
+            { area: "Processor - Assist with obligations", ref2019: "B.14.1.1 Assist controller with compliance", ref2025: "PII-P17", rem: "Help controller meet obligations." },
+            { area: "Processor - Assist with breach response", ref2019: "B.15.1.1 Assist breach handling", ref2025: "PII-P18", rem: "Support breach notifications." },
+            { area: "Processor - Training", ref2019: "B.3.2.1 Train personnel", ref2025: "PII-P03", rem: "Provide privacy training." }
+        ]; // 18
+
+        // Additional Modified/Integrated controls to reach 184 (21 controls)
+        const additionalControls = [
+            { area: "Integrated PIMS - Context of organization", ref2019: "ISO 27001:2013 Clause 4.1", ref2025: "Clause 4.1", rem: "Determine external and internal issues relevant to PIMS." },
+            { area: "Integrated PIMS - Interested parties", ref2019: "ISO 27001:2013 Clause 4.2", ref2025: "Clause 4.2", rem: "Identify stakeholders and their requirements." },
+            { area: "Integrated PIMS - Scope of PIMS", ref2019: "ISO 27001:2013 Clause 4.3", ref2025: "Clause 4.3", rem: "Define PIMS boundaries and applicability." },
+            { area: "Integrated PIMS - Leadership and commitment", ref2019: "ISO 27001:2013 Clause 5.1", ref2025: "Clause 5.1", rem: "Top management must demonstrate leadership." },
+            { area: "Integrated PIMS - Policy", ref2019: "ISO 27001:2013 Clause 5.2", ref2025: "Clause 5.2", rem: "Establish PIMS policy." },
+            { area: "Integrated PIMS - Roles and responsibilities", ref2019: "ISO 27001:2013 Clause 5.3", ref2025: "Clause 5.3", rem: "Assign PIMS roles and responsibilities." },
+            { area: "Integrated PIMS - Risk assessment", ref2019: "ISO 27001:2013 Clause 6.1.2", ref2025: "Clause 6.1.2", rem: "Define risk assessment process." },
+            { area: "Integrated PIMS - Risk treatment", ref2019: "ISO 27001:2013 Clause 6.1.3", ref2025: "Clause 6.1.3", rem: "Define risk treatment process." },
+            { area: "Integrated PIMS - PIMS objectives", ref2019: "ISO 27001:2013 Clause 6.2", ref2025: "Clause 6.2", rem: "Set PIMS objectives and plans." },
+            { area: "Integrated PIMS - Resources", ref2019: "ISO 27001:2013 Clause 7.1", ref2025: "Clause 7.1", rem: "Provide resources for PIMS." },
+            { area: "Integrated PIMS - Competence", ref2019: "ISO 27001:2013 Clause 7.2", ref2025: "Clause 7.2", rem: "Ensure personnel competence." },
+            { area: "Integrated PIMS - Awareness", ref2019: "ISO 27001:2013 Clause 7.3", ref2025: "Clause 7.3", rem: "Create awareness of PIMS policy." },
+            { area: "Integrated PIMS - Communication", ref2019: "ISO 27001:2013 Clause 7.4", ref2025: "Clause 7.4", rem: "Establish internal/external communication." },
+            { area: "Integrated PIMS - Documented information", ref2019: "ISO 27001:2013 Clause 7.5", ref2025: "Clause 7.5", rem: "Control documented information." },
+            { area: "Integrated PIMS - Operational planning", ref2019: "ISO 27001:2013 Clause 8.1", ref2025: "Clause 8.1", rem: "Plan and control PIMS processes." },
+            { area: "Integrated PIMS - Risk assessment implementation", ref2019: "ISO 27001:2013 Clause 8.2", ref2025: "Clause 8.2", rem: "Perform risk assessments." },
+            { area: "Integrated PIMS - Risk treatment implementation", ref2019: "ISO 27001:2013 Clause 8.3", ref2025: "Clause 8.3", rem: "Implement risk treatment plan." },
+            { area: "Integrated PIMS - Monitoring and measurement", ref2019: "ISO 27001:2013 Clause 9.1", ref2025: "Clause 9.1", rem: "Monitor and measure PIMS performance." },
+            { area: "Integrated PIMS - Internal audit", ref2019: "ISO 27001:2013 Clause 9.2", ref2025: "Clause 9.2", rem: "Conduct internal audits." },
+            { area: "Integrated PIMS - Management review", ref2019: "ISO 27001:2013 Clause 9.3", ref2025: "Clause 9.3", rem: "Review PIMS regularly." },
+            { area: "Integrated PIMS - Nonconformity and corrective action", ref2019: "ISO 27001:2013 Clause 10.1", ref2025: "Clause 10.1", rem: "Handle nonconformities and take corrective action." }
+        ]; // 21
+
+        // Combine all controls
+        const allControls = [...iso27002controls, ...piiController, ...piiProcessor, ...additionalControls]; // 114+31+18+21 = 184
+
+        // Generate table rows
+        const tbody = document.getElementById('tableBody');
+        allControls.forEach((ctrl, idx) => {
+            const row = document.createElement('tr');
+            row.setAttribute('data-idx', idx);
+
+            // ID
+            const idCell = document.createElement('td');
+            idCell.textContent = idx + 1;
+            row.appendChild(idCell);
+
+            // Area/Name
+            const areaCell = document.createElement('td');
+            areaCell.textContent = ctrl.area;
+            row.appendChild(areaCell);
+
+            // 2019 Ref
+            const ref2019Cell = document.createElement('td');
+            ref2019Cell.textContent = ctrl.ref2019;
+            row.appendChild(ref2019Cell);
+
+            // 2025 Mapping
+            const ref2025Cell = document.createElement('td');
+            ref2025Cell.textContent = ctrl.ref2025 || 'N/A';
+            row.appendChild(ref2025Cell);
+
+            // Status dropdown
+            const statusCell = document.createElement('td');
+            const statusSelect = document.createElement('select');
+            statusSelect.setAttribute('onchange', `updateRemediation(this, ${idx})`);
+            statusSelect.innerHTML = `
+                <option value="">Select</option>
+                <option value="Yes">✅ Yes</option>
+                <option value="No">❌ No</option>
+                <option value="Partial">⚠️ Partial</option>
+                <option value="NA">🚫 N/A</option>
+            `;
+            statusCell.appendChild(statusSelect);
+            row.appendChild(statusCell);
+
+            // Remediation cell
+            const remCell = document.createElement('td');
+            remCell.className = 'remediation';
+            remCell.id = `rem_${idx}`;
+            remCell.textContent = '';
+            row.appendChild(remCell);
+
+            // Notes textarea
+            const notesCell = document.createElement('td');
+            const notesArea = document.createElement('textarea');
+            notesArea.placeholder = 'Add evidence...';
+            notesCell.appendChild(notesArea);
+            row.appendChild(notesCell);
+
+            // Audit Result dropdown
+            const auditCell = document.createElement('td');
+            const auditSelect = document.createElement('select');
+            auditSelect.innerHTML = `
+                <option value="">Select</option>
+                <option value="Pass">✅ Pass</option>
+                <option value="Fail">❌ Fail</option>
+                <option value="NA">⏸️ N/A</option>
+            `;
+            auditCell.appendChild(auditSelect);
+            row.appendChild(auditCell);
+
+            tbody.appendChild(row);
+        });
+
+        // Remediation texts array
+        const remTexts = allControls.map(ctrl => ctrl.rem);
+
+        function updateRemediation(select, index) {
+            const remCell = document.getElementById(`rem_${index}`);
+            if (select.value === 'No') {
+                remCell.textContent = remTexts[index] || 'Implement appropriate control.';
+            } else {
+                remCell.textContent = '';
+            }
+        }
+
+        function exportCSV() {
+            let csv = [];
+            // Headers
+            const headers = ['ID', 'Control Area/Name', '2019 Control Ref', '2025 Mapping', 'Status', 'Remediation', 'Notes', 'Audit Result'];
+            csv.push(headers.join(','));
+
+            const rows = document.querySelectorAll('#auditTable tbody tr');
+            rows.forEach(row => {
+                const rowData = [];
+                const cells = row.querySelectorAll('td');
+                // ID
+                rowData.push(cells[0].innerText);
+                // Area
+                rowData.push('"' + cells[1].innerText.replace(/"/g, '""') + '"');
+                // 2019 Ref
+                rowData.push('"' + cells[2].innerText.replace(/"/g, '""') + '"');
+                // 2025 Mapping
+                rowData.push('"' + cells[3].innerText.replace(/"/g, '""') + '"');
+                // Status
+                const statusSelect = cells[4].querySelector('select');
+                rowData.push(statusSelect ? statusSelect.value : '');
+                // Remediation
+                const remText = cells[5].innerText.replace(/,/g, ';').replace(/"/g, '""');
+                rowData.push('"' + remText + '"');
+                // Notes
+                const notesArea = cells[6].querySelector('textarea');
+                let notesVal = notesArea ? notesArea.value : '';
+                notesVal = notesVal.replace(/,/g, ';').replace(/"/g, '""');
+                rowData.push('"' + notesVal + '"');
+                // Audit Result
+                const auditSelect = cells[7].querySelector('select');
+                rowData.push(auditSelect ? auditSelect.value : '');
+
+                csv.push(rowData.join(','));
+            });
+
+            const blob = new Blob([csv.join('\n')], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'ISO27701_184_Controls_Audit.csv';
+            a.click();
+        }
+
+        function resetAll() {
+            const selects = document.querySelectorAll('#auditTable tbody select');
+            selects.forEach(s => { s.value = ''; });
+            const textareas = document.querySelectorAll('#auditTable tbody textarea');
+            textareas.forEach(t => t.value = '');
+            const remCells = document.querySelectorAll('.remediation');
+            remCells.forEach(cell => cell.textContent = '');
+        }
+    </script>
+</body>
+</html>
