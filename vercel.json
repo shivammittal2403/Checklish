@@ -1,6 +1,12 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/checklists/:workbook",
+      "destination": "/checklists/:workbook/index.html"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
